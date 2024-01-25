@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='blivedm',
-    version='0.0.1',
+    version='0.1.1',
     description='blivedm fork仓库',
     long_description=open('README.md', encoding='UTF-8').read(),
     long_description_content_type='text/markdown',
