@@ -106,3 +106,5 @@ pdm.toml
 
 ori
 build
+.history
+.github
