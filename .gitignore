@@ -103,3 +103,6 @@ ENV/
 .pdm-python
 pdm.lock
 pdm.toml
+
+ori
+build

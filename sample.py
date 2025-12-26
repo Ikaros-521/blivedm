@@ -11,15 +11,11 @@ import blivedm.models.web as web_models
 
 # 直播间ID的取值看直播间URL
 TEST_ROOM_IDS = [
-    12235923,
-    14327465,
-    21396545,
-    21449083,
-    23105590,
+    278333
 ]
 
 # 这里填一个已登录账号的cookie的SESSDATA字段的值。不填也可以连接，但是收到弹幕的用户名会打码，UID会变成0
-SESSDATA = ''
+SESSDATA = '99f54f7d%2C1782302842%2Ce2a81%2Ac1CjDaRqUrceIJxEBQ78TrgpYnVc5FBa_BA6dXnRvkpBiIfeVtLXMj0Tz0_cEdXrEgRRISVmhMTjk2YTdqeG1XRGI2RXZhNDJ3WXBBbEFFcUNUdE1NQzlHTkRRSENDdVZSLWdpeGdIRHl2aWJMMlA1MXVRUGdQaTdpUzZfNjZMR19HYmxSaVVRZjJRIIEC'
 
 session: Optional[aiohttp.ClientSession] = None
 
@@ -106,14 +102,15 @@ class MyHandler(blivedm.BaseHandler):
     #     print(f'[{client.room_id}] {message.username} 上舰，guard_level={message.guard_level}')
 
     def _on_user_toast_v2(self, client: blivedm.BLiveClient, message: web_models.UserToastV2Message):
-        print(f'[{client.room_id}] {message.username} 上舰，guard_level={message.guard_level}')
+        if message.source != 2:
+            print(f'[{client.room_id}] {message.username} 上舰，guard_level={message.guard_level}')
 
     def _on_super_chat(self, client: blivedm.BLiveClient, message: web_models.SuperChatMessage):
         print(f'[{client.room_id}] 醒目留言 ¥{message.price} {message.uname}：{message.message}')
 
-    # def _on_interact_word(self, client: blivedm.BLiveClient, message: web_models.InteractWordMessage):
-    #     if message.msg_type == 1:
-    #         print(f'[{client.room_id}] {message.username} 进入房间')
+    def _on_interact_word_v2(self, client: blivedm.BLiveClient, message: web_models.InteractWordV2Message):
+        if message.msg_type == 1:
+            print(f'[{client.room_id}] {message.username} 进入房间')
 
 
 if __name__ == '__main__':

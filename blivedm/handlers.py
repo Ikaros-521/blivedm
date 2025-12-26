@@ -69,6 +69,16 @@ class BaseHandler(HandlerInterface):
     def __danmu_msg_callback(self, client: ws_base.WebSocketClientBase, command: dict):
         return self._on_danmaku(client, web_models.DanmakuMessage.from_command(command['info']))
 
+    def __danmu_msg_mirror_callback(self, client: ws_base.WebSocketClientBase, command: dict):
+        message = web_models.DanmakuMessage.from_command(command['info'])
+        message.is_mirror = True
+        return self._on_danmaku(client, message)
+
+    def __open_dm_mirror_callback(self, client: ws_base.WebSocketClientBase, command: dict):
+        message = open_models.DanmakuMessage.from_command(command['data'])
+        message.is_mirror = True
+        return self._on_open_live_danmaku(client, message)
+
     _CMD_CALLBACK_DICT: Dict[
         str,
         Optional[Callable[
@@ -83,6 +93,7 @@ class BaseHandler(HandlerInterface):
         # 弹幕
         # go-common\app\service\live\live-dm\service\v1\send.go
         'DANMU_MSG': __danmu_msg_callback,
+        'DANMU_MSG_MIRROR': __danmu_msg_mirror_callback,
         # 礼物
         'SEND_GIFT': _make_msg_callback('_on_gift', web_models.GiftMessage),
         # 上舰
@@ -94,7 +105,7 @@ class BaseHandler(HandlerInterface):
         # 删除醒目留言
         'SUPER_CHAT_MESSAGE_DELETE': _make_msg_callback('_on_super_chat_delete', web_models.SuperChatDeleteMessage),
         # 进入房间、关注主播等互动消息
-        'INTERACT_WORD': _make_msg_callback('_on_interact_word', web_models.InteractWordMessage),
+        'INTERACT_WORD_V2': _make_msg_callback('_on_interact_word_v2', web_models.InteractWordV2Message),
 
         #
         # 开放平台消息
@@ -102,6 +113,7 @@ class BaseHandler(HandlerInterface):
 
         # 弹幕
         'LIVE_OPEN_PLATFORM_DM': _make_msg_callback('_on_open_live_danmaku', open_models.DanmakuMessage),
+        'LIVE_OPEN_PLATFORM_DM_MIRROR': __open_dm_mirror_callback,
         # 礼物
         'LIVE_OPEN_PLATFORM_SEND_GIFT': _make_msg_callback('_on_open_live_gift', open_models.GiftMessage),
         # 上舰
@@ -160,7 +172,7 @@ class BaseHandler(HandlerInterface):
     def _on_super_chat_delete(self, client: ws_base.WebSocketClientBase, message: web_models.SuperChatDeleteMessage):
         """删除醒目留言"""
 
-    def _on_interact_word(self, client: ws_base.WebSocketClientBase, message: web_models.InteractWordMessage):
+    def _on_interact_word_v2(self, client: ws_base.WebSocketClientBase, message: web_models.InteractWordV2Message):
         """进入房间、关注主播等互动消息"""
 
     #
